@@ -1,4 +1,4 @@
-# mobile_desktop
+# Mobile Desktop
 
 A mobile desktop interface app
 
