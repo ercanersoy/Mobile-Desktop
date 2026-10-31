@@ -1,8 +1,10 @@
 // file_dialog.dart - Dialogs to choose a file to open or a place to save
 //
-// Copyright (c) 2025 Ercan Ersoy.
+// Copyright (c) 2025-2026 Ercan Ersoy.
 //
 // This file is part of the Mobile Desktop app.
+//
+// Written with Claude Code.
 
 import 'dart:io';
 

@@ -1,8 +1,10 @@
 // about.dart - About window
 //
-// Copyright (c) 2025 Ercan Ersoy.
+// Copyright (c) 2025-2026 Ercan Ersoy.
 //
 // This file is part of the Mobile Desktop app.
+//
+// Written with Claude Code.
 
 import 'package:flutter/material.dart';
 
@@ -43,7 +45,7 @@ class AboutApp extends StatelessWidget {
           Text(context.tr('about_description'),
               textAlign: TextAlign.center, style: textStyle),
           const SizedBox(height: 12),
-          Text('© 2025 Ercan Ersoy', style: textStyle),
+          Text('© 2025-2026 Ercan Ersoy', style: textStyle),
           Text(context.tr('license_mit'), style: textStyle),
           const SizedBox(height: 8),
           Text(context.tr('logo_notice'),
@@ -58,7 +60,7 @@ class AboutApp extends StatelessWidget {
                 context: context,
                 applicationName: 'Mobile Desktop',
                 applicationVersion: kAppVersion,
-                applicationLegalese: '© 2025 Ercan Ersoy',
+                applicationLegalese: '© 2025-2026 Ercan Ersoy',
               ),
               child: Text(context.tr('open_source_licenses')),
             ),

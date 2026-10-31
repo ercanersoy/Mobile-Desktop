@@ -1,3 +1,11 @@
+// MainActivity.kt - Android entry point and system information channel
+//
+// Copyright (c) 2025-2026 Ercan Ersoy.
+//
+// This file is part of the Mobile Desktop app.
+//
+// Written with Claude Code.
+
 package net.ercanersoy.mobile_desktop
 
 import android.app.ActivityManager

@@ -1,8 +1,10 @@
 // calculator.dart - Calculator app
 //
-// Copyright (c) 2025 Ercan Ersoy.
+// Copyright (c) 2025-2026 Ercan Ersoy.
 //
 // This file is part of the Mobile Desktop app.
+//
+// Written with Claude Code.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -112,7 +114,7 @@ class _CalculatorAppState extends State<CalculatorApp> {
     }
     final last = _expression[_expression.length - 1];
     if (_operators.contains(last)) {
-      // Replace the previous operator.
+      // A second operator in a row overrides the first one.
       _expression = _expression.substring(0, _expression.length - 1) + op;
     } else if (last == '(' && op != '−') {
       return;

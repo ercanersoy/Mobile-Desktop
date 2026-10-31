@@ -1,8 +1,10 @@
 // window_frame.dart - Title bar, borders and buttons of a window
 //
-// Copyright (c) 2025 Ercan Ersoy.
+// Copyright (c) 2025-2026 Ercan Ersoy.
 //
 // This file is part of the Mobile Desktop app.
+//
+// Written with Claude Code.
 
 import 'package:flutter/material.dart';
 

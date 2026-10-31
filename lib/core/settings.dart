@@ -1,8 +1,10 @@
 // settings.dart - Persistent user settings of the Mobile Desktop app
 //
-// Copyright (c) 2025 Ercan Ersoy.
+// Copyright (c) 2025-2026 Ercan Ersoy.
 //
 // This file is part of the Mobile Desktop app.
+//
+// Written with Claude Code.
 
 import 'dart:ui' show PlatformDispatcher;
 

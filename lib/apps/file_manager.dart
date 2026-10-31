@@ -1,8 +1,10 @@
 // file_manager.dart - File manager app
 //
-// Copyright (c) 2025 Ercan Ersoy.
+// Copyright (c) 2025-2026 Ercan Ersoy.
 //
 // This file is part of the Mobile Desktop app.
+//
+// Written with Claude Code.
 
 import 'dart:io';
 
@@ -439,7 +441,7 @@ class _FileManagerAppState extends State<FileManagerApp> {
         await File(source).rename(destination);
       }
     } on FileSystemException {
-      // Rename does not work across drives; copy and delete instead.
+      // Moving between drives needs a copy followed by a delete.
       await _copy(source, destination);
       if (await FileSystemEntity.isDirectory(source)) {
         await Directory(source).delete(recursive: true);
