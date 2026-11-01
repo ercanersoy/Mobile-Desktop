@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:async';
 import 'dart:convert';
@@ -156,6 +156,11 @@ class _TerminalAppState extends State<TerminalApp> {
         ['-c', command],
         workingDirectory: _cwd,
       );
+      if (!mounted) {
+        // The window was closed while the command was starting.
+        process.kill();
+        return;
+      }
       setState(() => _process = process);
       final outDone = process.stdout
           .transform(const Utf8Decoder(allowMalformed: true))

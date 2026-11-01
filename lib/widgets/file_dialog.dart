@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Opus 5.5.
 
 import 'dart:io';
 
@@ -139,11 +139,35 @@ class _FileDialogState extends State<_FileDialog> {
     _open(parent);
   }
 
-  void _confirmSave() {
+  Future<void> _confirmSave() async {
     final name = _nameController.text.trim();
     if (name.isEmpty || _path == null) return;
-    if (name.contains('/')) return;
-    Navigator.pop(context, '$_path/$name');
+    if (name.contains('/') || name == '.' || name == '..') return;
+    final path = '$_path/$name';
+    if (await FileSystemEntity.isDirectory(path)) return;
+    if (await File(path).exists()) {
+      if (!mounted) return;
+      final replace = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(context.tr('save_as')),
+          content:
+              Text(context.tr('overwrite_confirm').replaceAll('{name}', name)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(context.tr('cancel')),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(context.tr('ok')),
+            ),
+          ],
+        ),
+      );
+      if (replace != true) return;
+    }
+    if (mounted) Navigator.pop(context, path);
   }
 
   @override

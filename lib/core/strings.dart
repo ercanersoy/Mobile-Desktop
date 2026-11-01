@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 const List<String> kSupportedLanguages = ['tr', 'en'];
 
@@ -126,6 +126,7 @@ const Map<String, Map<String, String>> _strings = {
     'operation_failed': 'İşlem tamamlanamadı.',
     'invalid_name': 'Geçersiz ad.',
     'already_exists': 'Bu adda bir öğe zaten var.',
+    'overwrite_confirm': '"{name}" zaten var. Üzerine yazılsın mı?',
     'version': 'Sürüm',
     'stop': 'Durdur',
     'reset': 'Sıfırla',
@@ -377,6 +378,7 @@ const Map<String, Map<String, String>> _strings = {
     'operation_failed': 'The operation could not be completed.',
     'invalid_name': 'Invalid name.',
     'already_exists': 'An item with this name already exists.',
+    'overwrite_confirm': '"{name}" already exists. Replace it?',
     'version': 'Version',
     'stop': 'Stop',
     'reset': 'Reset',

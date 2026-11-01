@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -134,7 +134,7 @@ class _PaintAppState extends State<PaintApp> {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed == true && mounted) {
       setState(() {
         _strokes.clear();
         _redo.clear();

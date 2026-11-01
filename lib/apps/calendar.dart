@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:convert';
 
@@ -106,7 +106,7 @@ class _CalendarAppState extends State<CalendarApp> {
       ),
     );
     controller.dispose();
-    if (text == null || text.trim().isEmpty) return;
+    if (!mounted || text == null || text.trim().isEmpty) return;
     setState(() {
       final notes = _notes.putIfAbsent(_key(_selected), () => []);
       if (index == null) {

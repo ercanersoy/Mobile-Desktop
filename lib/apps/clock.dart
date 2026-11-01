@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:async';
 import 'dart:math' as math;
@@ -65,7 +65,9 @@ class _ClockTabState extends State<_ClockTab> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (TickerMode.of(context)) setState(() => _now = DateTime.now());
+      if (TickerMode.valuesOf(context).enabled) {
+        setState(() => _now = DateTime.now());
+      }
     });
   }
 

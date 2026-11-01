@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:async';
 
@@ -34,7 +34,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
     super.initState();
     _readMemory();
     _timer = Timer.periodic(const Duration(seconds: 2), (_) {
-      if (TickerMode.of(context)) _readMemory();
+      if (TickerMode.valuesOf(context).enabled) _readMemory();
     });
   }
 

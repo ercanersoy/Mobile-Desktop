@@ -1,10 +1,10 @@
 # Mobile Desktop
 
-A mobile desktop interface app
+A mobile desktop interface app.
 
 Copyright (c) 2025-2026 Ercan Ersoy
 
-This project licensed under MIT License.
+This project is licensed under the MIT License.
 
 ## Features
 
@@ -50,8 +50,11 @@ Run the tests with `flutter test`.
 
 ## Notes
 
-  * The logo of this app borrowed from Tango Icon Set, published as Public Domain.
-  * The other licenses can be found in the "About" page in this app. Click "About" button in start menu to display this page.
+  * The logo of this app is borrowed from the Tango Icon Set, released into
+    the public domain.
+  * The other licenses can be found in the "About" page in this app. Click
+    the "About" button in the start menu to display this page.
   * Storage access on Android 11 and newer needs the "All files access"
     permission. Without it, the File Manager still works in the app's own
     folder.
+  * This README.md was mostly written with Claude Code Opus 5.5.

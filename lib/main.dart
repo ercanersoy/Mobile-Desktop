@@ -5,7 +5,7 @@
 // This file is part of the Mobile Desktop app.
 //
 // Used ChatGPT GPT-4o, GitHub Copilot GPT-4o, GitHub Copilot GPT-4.1,
-// GitHub Copilot Claude 3.7 Sonnet and Claude Code for writting this program.
+// GitHub Copilot Claude 3.7 Sonnet and Claude Code Opus 5.5 for writting this program.
 
 import 'package:flutter/material.dart';
 

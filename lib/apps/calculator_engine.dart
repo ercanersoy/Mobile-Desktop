@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:math' as math;
 
@@ -51,6 +51,34 @@ String formatNumber(double value) {
     text = text.replaceFirst(RegExp(r'\.$'), '');
   }
   return text;
+}
+
+/// Changes the sign of the last number in an expression (the ± key).
+///
+/// "5" → "(−5)", "(−5)" → "5", "5+3" → "5+(−3)" and "5−3" → "5+3".
+String toggleLastSign(String expression) {
+  if (expression.isEmpty) return expression;
+  // A number, also in the 1e−7 form used for very small or large results.
+  const number = r'[0-9.]+(?:e[+−]?[0-9]+)?';
+
+  // "(−5)" goes back to "5".
+  final wrapped = RegExp('\\(−($number)\\)\$').firstMatch(expression);
+  if (wrapped != null) {
+    return expression.substring(0, wrapped.start) + wrapped.group(1)!;
+  }
+
+  final match = RegExp('(−?)($number)\$').firstMatch(expression);
+  if (match == null) return '−($expression)';
+  final before = expression.substring(0, match.start);
+  final digits = match.group(2)!;
+  if (match.group(1)!.isEmpty) return '$before(−$digits)';
+
+  // A minus at the start, after an operator or after "(" is a sign.
+  if (before.isEmpty || '+−×÷^('.contains(before[before.length - 1])) {
+    return before + digits;
+  }
+  // Otherwise it is a subtraction: "5−3" becomes "5+3".
+  return '$before+$digits';
 }
 
 String _normalize(String input) => input

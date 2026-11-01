@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,6 +44,18 @@ void main() {
           throwsA(isA<CalculatorException>()));
       expect(() => evaluateExpression('√−4'),
           throwsA(isA<CalculatorException>()));
+    });
+
+    test('± changes the sign of the last number', () {
+      expect(toggleLastSign('5'), '(−5)');
+      expect(toggleLastSign('(−5)'), '5');
+      expect(toggleLastSign('−5'), '5');
+      expect(toggleLastSign('5+3'), '5+(−3)');
+      expect(toggleLastSign('5−3'), '5+3');
+      expect(toggleLastSign('2×−5'), '2×5');
+      expect(toggleLastSign('1e−7'), '(−1e−7)');
+      expect(toggleLastSign('(2+3)'), '−((2+3))');
+      expect(evaluateExpression(toggleLastSign('5−3')), 8);
     });
 
     test('formats numbers without useless zeros', () {

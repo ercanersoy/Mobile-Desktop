@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:async';
 import 'dart:io';
@@ -61,7 +61,7 @@ class _SystemInfoAppState extends State<SystemInfoApp> {
 
   Future<void> _loadDynamic() async {
     // Do not waste battery while the window is minimized.
-    if (!TickerMode.of(context) && _loaded) return;
+    if (!TickerMode.valuesOf(context).enabled && _loaded) return;
     final results = await Future.wait([
       NativeSystem.memoryInfo(),
       NativeSystem.storageInfo(),

@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 /// Keep in sync with the version in pubspec.yaml.
 const String kAppVersion = '0.3.0';

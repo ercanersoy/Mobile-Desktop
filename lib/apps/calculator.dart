@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -125,23 +125,7 @@ class _CalculatorAppState extends State<CalculatorApp> {
 
   void _toggleSign() {
     if (_expression.isEmpty) return;
-    final match = RegExp(r'(−?)([0-9.]+)$').firstMatch(_expression);
-    if (match == null) {
-      _expression = '−($_expression)';
-    } else {
-      final before = _expression.substring(0, match.start);
-      final negative = match.group(1)!.isNotEmpty;
-      final canDropSign = before.isEmpty ||
-          _operators.contains(before[before.length - 1]) ||
-          before.endsWith('(');
-      if (negative && canDropSign) {
-        _expression = before + match.group(2)!;
-      } else if (negative) {
-        _expression = '$before−${match.group(2)!}';
-      } else {
-        _expression = '$before(−${match.group(2)!})';
-      }
-    }
+    _expression = toggleLastSign(_expression);
     _justEvaluated = false;
     _preview();
   }

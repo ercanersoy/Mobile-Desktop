@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'package:flutter/material.dart';
 
@@ -203,14 +203,17 @@ class _DesktopIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 78,
-      height: 82,
+      height: 86,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(4),
         splashColor: Colors.white24,
+        // Align to the top so every icon sits on the same grid line,
+        // whether its label takes one line or two.
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const SizedBox(height: 4),
             Container(
               width: 44,
               height: 44,

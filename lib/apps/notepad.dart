@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:io';
 
@@ -167,7 +167,7 @@ class _NotepadAppState extends State<NotepadApp> {
   }
 
   Future<void> _newFile() async {
-    if (!await _confirmDiscard()) return;
+    if (!await _confirmDiscard() || !mounted) return;
     setState(() {
       _path = null;
       _savedText = '';

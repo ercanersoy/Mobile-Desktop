@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'package:flutter/material.dart';
 
@@ -50,58 +50,71 @@ class WindowFrame extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onPanUpdate: (details) =>
-                        manager.move(window.id, details.delta),
-                    onDoubleTap: () => manager.toggleMaximize(window.id),
-                    child: Container(
-                      height: 32,
-                      padding: const EdgeInsets.only(left: 6, right: 2),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: active
-                              ? colors.activeTitle
-                              : colors.inactiveTitle,
-                        ),
+                  Container(
+                    height: 32,
+                    padding: const EdgeInsets.only(right: 2),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors:
+                            active ? colors.activeTitle : colors.inactiveTitle,
                       ),
-                      child: Row(
-                        children: [
-                          Icon(window.icon, size: 18, color: colors.titleText),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: colors.titleText,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                    ),
+                    child: Row(
+                      children: [
+                        // Only the icon and title area listens for drag and
+                        // double-tap. If the buttons were inside it, the
+                        // double-tap detector would delay their taps.
+                        Expanded(
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onPanUpdate: (details) =>
+                                manager.move(window.id, details.delta),
+                            onDoubleTap: () =>
+                                manager.toggleMaximize(window.id),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 6),
+                              child: Row(
+                                children: [
+                                  Icon(window.icon,
+                                      size: 18, color: colors.titleText),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: colors.titleText,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                          _TitleButton(
-                            icon: Icons.minimize,
-                            tooltip: context.tr('minimize'),
-                            onPressed: () => manager.minimize(window.id),
-                          ),
-                          _TitleButton(
-                            icon: window.maximized
-                                ? Icons.filter_none
-                                : Icons.crop_square,
-                            tooltip: context.tr(
-                                window.maximized ? 'restore' : 'maximize'),
-                            onPressed: () => manager.toggleMaximize(window.id),
-                          ),
-                          const SizedBox(width: 2),
-                          _TitleButton(
-                            icon: Icons.close,
-                            tooltip: context.tr('close'),
-                            onPressed: () => manager.close(window.id),
-                          ),
-                        ],
-                      ),
+                        ),
+                        _TitleButton(
+                          icon: Icons.minimize,
+                          tooltip: context.tr('minimize'),
+                          onPressed: () => manager.minimize(window.id),
+                        ),
+                        _TitleButton(
+                          icon: window.maximized
+                              ? Icons.filter_none
+                              : Icons.crop_square,
+                          tooltip: context
+                              .tr(window.maximized ? 'restore' : 'maximize'),
+                          onPressed: () => manager.toggleMaximize(window.id),
+                        ),
+                        const SizedBox(width: 2),
+                        _TitleButton(
+                          icon: Icons.close,
+                          tooltip: context.tr('close'),
+                          onPressed: () => manager.close(window.id),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 2),

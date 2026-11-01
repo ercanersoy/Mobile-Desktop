@@ -4,7 +4,7 @@
 //
 // This file is part of the Mobile Desktop app.
 //
-// Written with Claude Code.
+// Written with Claude Code Opus 5.5.
 
 import 'dart:io';
 
@@ -133,6 +133,8 @@ class _FileManagerAppState extends State<FileManagerApp> {
   }
 
   Future<void> _open(String path, {bool addToHistory = true}) async {
+    // Callers may reach here after an await, when the window is closed.
+    if (!mounted) return;
     setState(() {
       _loading = true;
       _selected.clear();
@@ -218,7 +220,11 @@ class _FileManagerAppState extends State<FileManagerApp> {
 
   String _nameOf(String path) => path.split('/').last;
 
-  void _showMessage(String text) {
+  /// Shows the translated text for [key]. Safe to call after an await.
+  void _showMessage(String key, {String? count}) {
+    if (!mounted) return;
+    var text = context.tr(key);
+    if (count != null) text = text.replaceAll('{count}', count);
     ScaffoldMessenger.maybeOf(context)
         ?.showSnackBar(SnackBar(content: Text(text)));
   }
@@ -276,7 +282,7 @@ class _FileManagerAppState extends State<FileManagerApp> {
     final name = result?.trim();
     if (name == null || name.isEmpty) return null;
     if (name.contains('/') || name == '.' || name == '..') {
-      _showMessage(context.tr('invalid_name'));
+      _showMessage('invalid_name');
       return null;
     }
     return name;
@@ -286,10 +292,15 @@ class _FileManagerAppState extends State<FileManagerApp> {
     final name = await _askName('new_folder');
     if (name == null || _path == null) return;
     try {
-      await Directory('$_path/$name').create();
+      final folder = Directory('$_path/$name');
+      if (await folder.exists()) {
+        _showMessage('already_exists');
+        return;
+      }
+      await folder.create();
       await _refresh();
     } catch (_) {
-      _showMessage(context.tr('operation_failed'));
+      _showMessage('operation_failed');
     }
   }
 
@@ -299,24 +310,31 @@ class _FileManagerAppState extends State<FileManagerApp> {
     try {
       final file = File('$_path/$name');
       if (await file.exists()) {
-        _showMessage(context.tr('already_exists'));
+        _showMessage('already_exists');
         return;
       }
       await file.create();
       await _refresh();
     } catch (_) {
-      _showMessage(context.tr('operation_failed'));
+      _showMessage('operation_failed');
     }
   }
 
   Future<void> _rename(FileSystemEntity entry) async {
     final name = await _askName('rename', initial: _nameOf(entry.path));
-    if (name == null) return;
+    if (name == null || name == _nameOf(entry.path)) return;
+    final destination = '${entry.parent.path}/$name';
     try {
-      await entry.rename('${entry.parent.path}/$name');
+      // Renaming onto an existing file would silently replace it.
+      if (await FileSystemEntity.type(destination, followLinks: false) !=
+          FileSystemEntityType.notFound) {
+        _showMessage('already_exists');
+        return;
+      }
+      await entry.rename(destination);
       await _refresh();
     } catch (_) {
-      _showMessage(context.tr('operation_failed'));
+      _showMessage('operation_failed');
     }
   }
 
@@ -346,17 +364,12 @@ class _FileManagerAppState extends State<FileManagerApp> {
     var failed = false;
     for (final path in paths) {
       try {
-        final type = await FileSystemEntity.type(path, followLinks: false);
-        if (type == FileSystemEntityType.directory) {
-          await Directory(path).delete(recursive: true);
-        } else {
-          await File(path).delete();
-        }
+        await _deletePath(path);
       } catch (_) {
         failed = true;
       }
     }
-    if (failed && mounted) _showMessage(context.tr('operation_failed'));
+    if (failed) _showMessage('operation_failed');
     await _refresh();
   }
 
@@ -366,9 +379,7 @@ class _FileManagerAppState extends State<FileManagerApp> {
       _fileClipboard = _ClipboardEntry(List.of(paths), cut);
       _selected.clear();
     });
-    _showMessage(context
-        .tr(cut ? 'cut_done' : 'copy_done')
-        .replaceAll('{count}', '${paths.length}'));
+    _showMessage(cut ? 'cut_done' : 'copy_done', count: '${paths.length}');
   }
 
   Future<void> _paste() async {
@@ -398,16 +409,18 @@ class _FileManagerAppState extends State<FileManagerApp> {
       }
     }
     if (clip.cut) _fileClipboard = null;
-    if (failed && mounted) _showMessage(context.tr('operation_failed'));
+    if (failed) _showMessage('operation_failed');
     await _refresh();
   }
 
   /// Adds " (2)", " (3)", ... when the name is already used.
   Future<String> _uniquePath(String path) async {
-    if (!await FileSystemEntity.isFile(path) &&
-        !await FileSystemEntity.isDirectory(path)) {
-      return path;
-    }
+    // Links count as used names too, even when they point nowhere.
+    Future<bool> used(String p) async =>
+        await FileSystemEntity.type(p, followLinks: false) !=
+        FileSystemEntityType.notFound;
+
+    if (!await used(path)) return path;
     final dot = path.lastIndexOf('.');
     final slash = path.lastIndexOf('/');
     final hasExt = dot > slash + 1;
@@ -415,15 +428,17 @@ class _FileManagerAppState extends State<FileManagerApp> {
     final ext = hasExt ? path.substring(dot) : '';
     for (var i = 2;; i++) {
       final candidate = '$base ($i)$ext';
-      if (!await FileSystemEntity.isFile(candidate) &&
-          !await FileSystemEntity.isDirectory(candidate)) {
-        return candidate;
-      }
+      if (!await used(candidate)) return candidate;
     }
   }
 
   Future<void> _copy(String source, String destination) async {
-    if (await FileSystemEntity.isDirectory(source)) {
+    final type = await FileSystemEntity.type(source, followLinks: false);
+    if (type == FileSystemEntityType.link) {
+      // Copy the link itself. Following it could copy a parent folder
+      // into itself again and again.
+      await Link(destination).create(await Link(source).target());
+    } else if (type == FileSystemEntityType.directory) {
       await Directory(destination).create(recursive: true);
       await for (final child in Directory(source).list(followLinks: false)) {
         await _copy(child.path, '$destination/${_nameOf(child.path)}');
@@ -433,21 +448,32 @@ class _FileManagerAppState extends State<FileManagerApp> {
     }
   }
 
+  /// Deletes a file, a folder with its contents, or only the link itself.
+  Future<void> _deletePath(String path) async {
+    final type = await FileSystemEntity.type(path, followLinks: false);
+    if (type == FileSystemEntityType.link) {
+      await Link(path).delete();
+    } else if (type == FileSystemEntityType.directory) {
+      await Directory(path).delete(recursive: true);
+    } else {
+      await File(path).delete();
+    }
+  }
+
   Future<void> _move(String source, String destination) async {
     try {
-      if (await FileSystemEntity.isDirectory(source)) {
+      final type = await FileSystemEntity.type(source, followLinks: false);
+      if (type == FileSystemEntityType.directory) {
         await Directory(source).rename(destination);
+      } else if (type == FileSystemEntityType.link) {
+        await Link(source).rename(destination);
       } else {
         await File(source).rename(destination);
       }
     } on FileSystemException {
       // Moving between drives needs a copy followed by a delete.
       await _copy(source, destination);
-      if (await FileSystemEntity.isDirectory(source)) {
-        await Directory(source).delete(recursive: true);
-      } else {
-        await File(source).delete();
-      }
+      await _deletePath(source);
     }
   }
 
